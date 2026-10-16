@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#07070b">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Cadence</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -13,46 +13,94 @@
 </head>
 <body>
 <div id="app">
-  <!-- LIBRARY -->
-  <section id="library">
-    <header class="lib-head">
-      <h1>Library</h1>
-      <div class="lib-actions">
-        <button id="btnInstall" class="chip hidden">Install</button>
-        <button id="btnAdd" class="chip primary"></button>
+  <div id="ambient"></div>
+
+  <main id="main">
+    <!-- ALBUMS -->
+    <section class="tab" id="tab-albums">
+      <header class="large-head"><h1>Albums</h1><button class="round glass" data-settings aria-label="Settings"></button></header>
+      <div class="banner glass hidden"></div>
+      <div id="albumGrid" class="grid"></div>
+      <div class="empty glass hidden" id="empty">
+        <div class="empty-ic"></div>
+        <h2>Add your music</h2>
+        <p id="emptyText">Choose your Music folder once and Cadence will find every song in it, fetch the lyrics, and keep them for offline use.</p>
+        <button class="btn" id="btnAddFolder"></button>
+        <button class="btn ghost" id="btnAddFiles">Add individual songs</button>
       </div>
-    </header>
-    <div class="search"><input id="search" type="search" placeholder="Search songs" autocomplete="off"></div>
-    <div id="status" class="status hidden"></div>
-    <ul id="list"></ul>
-    <div id="empty" class="empty">
-      <div class="empty-ic"></div>
-      <h2>No songs yet</h2>
-      <p>Tap <b>Add songs</b> and pick audio files from your phone. Lyrics are fetched from LRCLIB and saved for offline use.</p>
+    </section>
+
+    <!-- SONGS -->
+    <section class="tab hidden" id="tab-songs">
+      <header class="large-head"><h1>Songs</h1><button class="round glass" data-settings aria-label="Settings"></button></header>
+      <div class="banner glass hidden"></div>
+      <div class="actions"><button class="pill-btn glass" id="songsPlay"></button><button class="pill-btn glass" id="songsShuffle"></button></div>
+      <ul id="songList" class="rows"></ul>
+    </section>
+
+    <!-- SEARCH -->
+    <section class="tab hidden" id="tab-search">
+      <header class="large-head"><h1>Search</h1></header>
+      <div class="searchbar glass"><span id="searchIc"></span><input id="search" type="search" placeholder="Songs, albums, artists" autocomplete="off"></div>
+      <div id="searchResults"></div>
+    </section>
+  </main>
+
+  <!-- ALBUM DETAIL -->
+  <section id="album">
+    <button class="round glass" id="albBack" aria-label="Back"></button>
+    <div class="page-scroll">
+      <div class="alb-top">
+        <div id="albArt" class="alb-art"></div>
+        <h2 id="albTitle"></h2>
+        <div id="albArtist" class="alb-artist"></div>
+        <div id="albMeta" class="alb-meta"></div>
+        <div class="actions center"><button class="pill-btn glass" id="albPlay"></button><button class="pill-btn glass" id="albShuffle"></button></div>
+      </div>
+      <ul id="albTracks" class="rows"></ul>
     </div>
   </section>
 
-  <!-- MINI PLAYER -->
-  <div id="mini" class="hidden">
-    <div id="miniProg"></div>
-    <img id="miniArt" alt="">
-    <div class="mini-meta"><div id="miniTitle"></div><div id="miniArtist"></div></div>
-    <button id="miniPlay" class="icon-btn" aria-label="Play or pause"></button>
+  <!-- MINI PLAYER + TAB BAR -->
+  <div id="dock">
+    <div id="mini" class="glass hidden">
+      <div id="miniProg"></div>
+      <div id="miniArt" class="cov"></div>
+      <div class="mini-meta"><div id="miniTitle"></div><div id="miniArtist"></div></div>
+      <button id="miniPlay" class="plain" aria-label="Play or pause"></button>
+      <button id="miniNext" class="plain" aria-label="Next"></button>
+    </div>
+    <nav id="tabbar" class="glass" style="--i:0">
+      <div id="tabpill"></div>
+      <button class="tabbtn on" data-tab="albums"><span data-ic="album"></span>Albums</button>
+      <button class="tabbtn" data-tab="songs"><span data-ic="songs"></span>Songs</button>
+      <button class="tabbtn" data-tab="search"><span data-ic="search"></span>Search</button>
+    </nav>
   </div>
 
   <!-- NOW PLAYING -->
   <section id="player">
     <div id="bg"></div>
     <div id="bgShade"></div>
-    <header class="phead">
-      <button id="btnBack" class="icon-btn" aria-label="Close"></button>
-      <div class="pmeta">
-        <img id="pArt" alt="">
-        <div class="ptext"><div id="pTitle"></div><div id="pArtist"></div></div>
-      </div>
-      <button id="btnLyricMenu" class="icon-btn" aria-label="Lyrics options"></button>
+    <button id="btnBack" class="grab-btn" aria-label="Close player"></button>
+
+    <header id="npHead">
+      <div id="slotSmall"></div>
+      <div class="np-text"><div id="pTitleS"></div><div id="pArtistS"></div></div>
+      <button id="btnMenuS" class="round glass" aria-label="Lyrics options"></button>
     </header>
-    <div id="lyrics"><div id="lyricsInner"></div></div>
+
+    <div class="np-body">
+      <div class="np-stage">
+        <div id="slotBig"><div id="npArt" class="cov"></div></div>
+        <div class="np-titlerow">
+          <div class="np-text big"><div id="pTitle"></div><div id="pArtist"></div></div>
+          <button id="btnMenuB" class="round glass" aria-label="Lyrics options"></button>
+        </div>
+      </div>
+      <div id="lyrics"><div id="lyricsInner"></div></div>
+    </div>
+
     <footer class="controls">
       <div class="seekrow">
         <span id="tCur">0:00</span>
@@ -60,20 +108,24 @@
         <span id="tDur">0:00</span>
       </div>
       <div class="btnrow">
-        <button id="btnShuffle" class="icon-btn" aria-label="Shuffle"></button>
-        <button id="btnPrev" class="icon-btn big" aria-label="Previous"></button>
-        <button id="btnPlay" class="play-btn" aria-label="Play or pause"></button>
-        <button id="btnNext" class="icon-btn big" aria-label="Next"></button>
-        <button id="btnRepeat" class="icon-btn" aria-label="Repeat"></button>
+        <button id="btnPrev" class="tbtn" aria-label="Previous"></button>
+        <button id="btnPlay" class="tbtn main" aria-label="Play or pause"></button>
+        <button id="btnNext" class="tbtn" aria-label="Next"></button>
+      </div>
+      <div class="toolrow">
+        <button id="btnLyricsToggle" class="tool" aria-label="Show lyrics"></button>
+        <button id="btnShuffle" class="tool" aria-label="Shuffle"></button>
+        <button id="btnRepeat" class="tool" aria-label="Repeat"></button>
+        <button id="btnQueueMenu" class="tool" aria-label="Lyrics options"></button>
       </div>
     </footer>
   </section>
 
-  <!-- BOTTOM SHEET -->
-  <div id="sheet"><div class="scrim"></div><div class="panel" id="sheetPanel"></div></div>
+  <div id="sheet"><div class="scrim"></div><div class="panel glass" id="sheetPanel"></div></div>
   <div id="toast"></div>
 </div>
 <input id="file" type="file" accept="audio/*,.mp3,.m4a,.aac,.flac,.ogg,.opus,.wav" multiple hidden>
+<input id="dirInput" type="file" webkitdirectory multiple hidden>
 <script type="module" src="app.js"></script>
 </body>
 </html>
