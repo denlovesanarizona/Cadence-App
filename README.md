@@ -1,4 +1,4 @@
-# Lyric Player (PWA)
+# Cadence (PWA)
 
 Local music player for Android with synced lyrics from LRCLIB.
 
