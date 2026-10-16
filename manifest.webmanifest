@@ -1,6 +1,6 @@
 {
   "name": "Cadence",
-  "short_name": "Lyrics",
+  "short_name": "Cadence",
   "description": "Local music player with synced lyrics",
   "start_url": "./",
   "scope": "./",
