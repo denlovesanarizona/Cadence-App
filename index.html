@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Lyric Player</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <!-- LIBRARY -->
+  <section id="library">
+    <header class="lib-head">
+      <h1>Library</h1>
+      <div class="lib-actions">
+        <button id="btnInstall" class="chip hidden">Install</button>
+        <button id="btnAdd" class="chip primary"></button>
+      </div>
+    </header>
+    <div class="search"><input id="search" type="search" placeholder="Search songs" autocomplete="off"></div>
+    <div id="status" class="status hidden"></div>
+    <ul id="list"></ul>
+    <div id="empty" class="empty">
+      <div class="empty-ic"></div>
+      <h2>No songs yet</h2>
+      <p>Tap <b>Add songs</b> and pick audio files from your phone. Lyrics are fetched from LRCLIB and saved for offline use.</p>
+    </div>
+  </section>
+
+  <!-- MINI PLAYER -->
+  <div id="mini" class="hidden">
+    <div id="miniProg"></div>
+    <img id="miniArt" alt="">
+    <div class="mini-meta"><div id="miniTitle"></div><div id="miniArtist"></div></div>
+    <button id="miniPlay" class="icon-btn" aria-label="Play or pause"></button>
+  </div>
+
+  <!-- NOW PLAYING -->
+  <section id="player">
+    <div id="bg"></div>
+    <div id="bgShade"></div>
+    <header class="phead">
+      <button id="btnBack" class="icon-btn" aria-label="Close"></button>
+      <div class="pmeta">
+        <img id="pArt" alt="">
+        <div class="ptext"><div id="pTitle"></div><div id="pArtist"></div></div>
+      </div>
+      <button id="btnLyricMenu" class="icon-btn" aria-label="Lyrics options"></button>
+    </header>
+    <div id="lyrics"><div id="lyricsInner"></div></div>
+    <footer class="controls">
+      <div class="seekrow">
+        <span id="tCur">0:00</span>
+        <input id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">
+        <span id="tDur">0:00</span>
+      </div>
+      <div class="btnrow">
+        <button id="btnShuffle" class="icon-btn" aria-label="Shuffle"></button>
+        <button id="btnPrev" class="icon-btn big" aria-label="Previous"></button>
+        <button id="btnPlay" class="play-btn" aria-label="Play or pause"></button>
+        <button id="btnNext" class="icon-btn big" aria-label="Next"></button>
+        <button id="btnRepeat" class="icon-btn" aria-label="Repeat"></button>
+      </div>
+    </footer>
+  </section>
+
+  <!-- BOTTOM SHEET -->
+  <div id="sheet"><div class="scrim"></div><div class="panel" id="sheetPanel"></div></div>
+  <div id="toast"></div>
+</div>
+<input id="file" type="file" accept="audio/*,.mp3,.m4a,.aac,.flac,.ogg,.opus,.wav" multiple hidden>
+<script type="module" src="app.js"></script>
+</body>
+</html>
