@@ -1,13 +1,13 @@
 {
   "name": "Cadence",
   "short_name": "Cadence",
-  "description": "Local music player with synced lyrics",
+  "description": "Music player with synced, glowing lyrics",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
+  "background_color": "#07070b",
+  "theme_color": "#07070b",
   "icons": [
     { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
