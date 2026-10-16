@@ -74,6 +74,8 @@ async function readID3v2(file) {
     if (id === 'TIT2' || id === 'TT2') out.title = clean(decode(data.subarray(1), data[0]));
     else if (id === 'TPE1' || id === 'TP1') out.artist = clean(decode(data.subarray(1), data[0]));
     else if (id === 'TALB' || id === 'TAL') out.album = clean(decode(data.subarray(1), data[0]));
+    else if (id === 'TPE2' || id === 'TP2') out.albumArtist = clean(decode(data.subarray(1), data[0]));
+    else if (id === 'TRCK' || id === 'TRK') out.track = parseInt(clean(decode(data.subarray(1), data[0])), 10) || 0;
     else if (id === 'APIC' || id === 'PIC') {
       const enc = data[0];
       let i = 1, mime;
@@ -112,6 +114,8 @@ function parseVorbisComments(b, off, out) {
     if (key === 'TITLE') out.title = val;
     else if (key === 'ARTIST' && !out.artist) out.artist = val;
     else if (key === 'ALBUM') out.album = val;
+    else if (key === 'ALBUMARTIST') out.albumArtist = val;
+    else if (key === 'TRACKNUMBER') out.track = parseInt(val) || 0;
   }
 }
 
@@ -178,7 +182,7 @@ async function readMP4(file) {
       const end = Math.min(e, s + size);
       if (type === 'udta' || type === 'ilst') walk(b, s + 8, end, depth + 1);
       else if (type === 'meta') walk(b, s + 12, end, depth + 1);
-      else if (type === NAM || type === ART || type === ALB || type === 'aART' || type === 'covr') {
+      else if (type === NAM || type === ART || type === ALB || type === 'aART' || type === 'covr' || type === 'trkn') {
         // data atom
         let d = s + 8;
         while (d + 16 <= end) {
@@ -187,10 +191,11 @@ async function readMP4(file) {
             const flag = (b[d + 9] << 16) | (b[d + 10] << 8) | b[d + 11];
             const payload = b.subarray(d + 16, d + ds);
             if (type === 'covr') out.art = new Blob([payload], { type: flag === 14 ? 'image/png' : 'image/jpeg' });
+            else if (type === 'trkn') out.track = (payload[2] << 8) | payload[3];
             else {
               const v = new TextDecoder('utf-8').decode(payload);
               if (type === NAM) out.title = v; else if (type === ART) out.artist = v;
-              else if (type === ALB) out.album = v; else if (!out.artist) out.artist = v;
+              else if (type === ALB) out.album = v; else out.albumArtist = v;
             }
             break;
           }
@@ -215,9 +220,9 @@ export async function readTags(file) {
     else if (latin1(h.subarray(0, 4)) === 'OggS') tags = await readOgg(file);
     else if (latin1(h.subarray(4, 8)) === 'ftyp') tags = await readMP4(file);
     if (!tags.title && !tags.artist) tags = { ...(await readID3v1(file)), ...(tags.art ? { art: tags.art } : {}) };
-    return { title: tags.title || '', artist: tags.artist || '', album: tags.album || '', art: tags.art || null };
+    return { title: tags.title || '', artist: tags.artist || '', album: tags.album || '', albumArtist: tags.albumArtist || '', track: tags.track || 0, art: tags.art || null };
   } catch (e) {
     console.warn('tag read failed', e);
-    return { title: '', artist: '', album: '', art: null };
+    return { title: '', artist: '', album: '', albumArtist: '', track: 0, art: null };
   }
 }
