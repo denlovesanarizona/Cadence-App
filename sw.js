@@ -1,6 +1,6 @@
 // Network-first service worker: always fresh when online, works offline from cache.
 // Bump VERSION when you want to force old caches out.
-const VERSION = 'lp-v1';
+const VERSION = 'cadence-v1';
 const ASSETS = ['./', './index.html', './style.css', './app.js', './db.js', './tags.js', './lrc.js',
   './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
